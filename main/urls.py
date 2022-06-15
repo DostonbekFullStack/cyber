@@ -3,7 +3,7 @@ from .views import *
 
 urlpatterns = [
     path('api/infoget/', InfoGET),
-    path('api/tour/cs/', RandomizeCS),
-    # path('api/tour/dota/', RandomizeDota),
+    path('api/tour/<int:pk>/', RandomizeTeam),
+    path('api/tour/<int:pk>/', RandomizePk),
 
 ]

@@ -42,7 +42,6 @@ class NumberofResidenent(models.Model):
     text = models.CharField(max_length=255)
 
 class Team(models.Model):
-    one_player = models.BooleanField(default=False)
     team = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255, null=True, blank=True)

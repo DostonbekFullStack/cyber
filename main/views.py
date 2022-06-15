@@ -51,33 +51,33 @@ def GameGET(request):
 #     return Response(ser.data)
 
 @api_view(['GET'])
-def RandomizeCS(request):
-    instance = Tournament.objects.get(id=2)
-    teamtr1 = Team.objects.get(id=3)
-    teamtr1.save()
-    teamtr2 = Team.objects.get(id=4)
-    teamtr2.save()
-    instance.team.add(teamtr1, teamtr2)
-    instance.save()
-    return Response('smth')
-    # cs = []
-    # if len(teamtr) >= 4:
-    #     for i in teamtr:
-    #         cs.append(i)
-    #     instance.team.add(cs)
-    #     return Response('asd')
-    
-    # for i in teamtr:
-    #     Tournament.objects.create(team=i)
-    # return Response('sasd')
-    
+def RandomizeTeam(request, pk):
+    teamtr = Team.objects.all().filter(team=False, direction_id=pk)
+    list = []
+    for i in teamtr:
+        list.append(i)
+    a = Tournament.objects.create(game_id=pk)
+    a.team.set(random.sample(list, 5))
+    a.save()
+    data = {
+        'msg':'Bitta komanda boldi',
+        'game':a.game.name,
+    }
+    return Response(data)
+
 @api_view(['GET'])
-def RandomizeDota(request):
-    instance = Tournament.objects.all()
-    teamtr = Team.objects.get(team=True)
-    if len(teamtr) >= 4:
-        for i in teamtr:
-            
+def RandomizePk(request, pk):
+    teamtr = Team.objects.all().filter(team=True, direction_id=pk)
+    list = []
+    for i in teamtr:
+        list.append(i)
+    a = Tournament.objects.create(game_id=pk)
+    a.team.set(random.sample(list, 2))
+    a.save()
+    data = {
+        'game':a.game.name,
+    }
+    return Response(data)
 
 
 @api_view(['GET'])
@@ -85,6 +85,7 @@ def PhotoGalerieGET(request):
     photogalery = PhotoGalerie.objects.last()
     ser = PhotoGalerieSerializer(photogalery, many=False)
     return Response(ser.data)
+
 
 @api_view(['GET'])
 def NumberofResidenentGET(request):
