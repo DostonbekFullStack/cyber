@@ -56,10 +56,19 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
+class Group(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    team = models.ManyToManyField(Team)
 
 class Tournament(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     team = models.ManyToManyField(Team, null=True, blank=True)
 
+    def teams_or_players(self):
+        return "\n".join(str([p.name for p in self.team.all()]))
+
 class Newsletter(models.Model):
     email = models.EmailField()
+
+# class Final(models.Model):
+#     tour = models.ForeignKey(Tournament, on_delete=models.CASCADE)

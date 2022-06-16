@@ -2,8 +2,10 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from .models import *
+from rest_framework.generics import RetrieveAPIView, ListAPIView
 from .serializer import *
 from rest_framework.decorators import api_view
+from django.shortcuts import get_object_or_404
 import random
 
 # Create your views here.
@@ -44,41 +46,100 @@ def GameGET(request):
     ser = GameSerializer(game, many=False)
     return Response(ser.data)
 
-# @api_view(['GET'])
-# def TournamentGET(request):
-#     tour = Tournament.objects.all()
-#     ser = TournamentSerializer(tour, many=True)
-#     return Response(ser.data)
-
 @api_view(['GET'])
-def RandomizeTeam(request, pk):
+def GenerateGroup(request, pk):
     teamtr = Team.objects.all().filter(team=False, direction_id=pk)
     list = []
     for i in teamtr:
         list.append(i)
     a = Tournament.objects.create(game_id=pk)
-    a.team.set(random.sample(list, 5))
+    if len(list) < 2:
+        return Response('kamandalar yetmayapti')
+    else:
+        randoming = random.sample(list, 2)
+    a.team.set(randoming)
     a.save()
     data = {
-        'msg':'Bitta komanda boldi',
+        'players': f"{randoming}",
         'game':a.game.name,
     }
     return Response(data)
 
 @api_view(['GET'])
-def RandomizePk(request, pk):
+def TournamentPk(request, pk):
     teamtr = Team.objects.all().filter(team=True, direction_id=pk)
+    a = Tournament.objects.create(game_id=pk)
+    c = Tournament.objects.get(game_id=pk)
     list = []
     for i in teamtr:
-        list.append(i)
-    a = Tournament.objects.create(game_id=pk)
-    a.team.set(random.sample(list, 2))
+        print('for')
+        if i in c:
+            print('if')
+            i.remove()
+        else:
+            list.append(i)
+            print('else')
+    if len(list) < 2:
+        return Response('kamandalar yetmayapti')
+    else:
+        randoming = random.sample(list, 2)
+    a.team.set(randoming)
     a.save()
     data = {
         'game':a.game.name,
+        'teamlar': f"{randoming}"
     }
     return Response(data)
 
+# @api_view(['GET'])
+# def GenerateTeam(request, pk):
+#     teamtr = Team.objects.all().filter(team=True, direction_id=pk)
+#     list = []
+#     for i in teamtr:
+#         list.append(i)
+#     a = Group.objects.create(game_id=pk)
+#     randoming = random.sample(list, 1)
+#     a.team.set(randoming)
+#     a.save()
+#     data = {
+#         'komanda': f"{randoming}",
+#         'msg':'Tasdiqlandi',
+#         'game':a.game.name,
+#     }
+#     return Response(data)
+
+# @api_view(['GET'])
+# def asd(request, pk):
+#     teamtr = Group.objects.filter(team_team=True, direction_id=pk)
+#     list = []
+#     for i in teamtr:
+#         list.append(i)
+#     a = Tournament.objects.create(game_id=pk)
+#     randoming = random.sample(list, 2)
+#     a.team.set(randoming)
+#     a.save()
+#     data = {
+#         'game':a.game.name,
+#         'teamlar': f"{randoming}"
+#     }
+#     return Response(data)
+
+class TournamentsGET(ListAPIView):
+    queryset = Tournament.objects.all()
+    serializer_class = TournamentSerializer
+
+    def list(self, request):
+        queryset = Tournament.objects.all().order_by('-id')[0:4]
+        serializer = TournamentSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+class TournamentID(RetrieveAPIView):
+
+    def retrieve(self, request, pk):
+        tournament = Tournament.objects.get(id=pk)
+        ser = TournamentSerializer(tournament)
+        return Response(ser.data)
+    
 
 @api_view(['GET'])
 def PhotoGalerieGET(request):
