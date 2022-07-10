@@ -42,6 +42,7 @@ class NumberofResidenent(models.Model):
     text = models.CharField(max_length=255)
 
 class Team(models.Model):
+    is_playing = models.BooleanField(default=False)
     team = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255, null=True, blank=True)
@@ -62,13 +63,10 @@ class Group(models.Model):
 
 class Tournament(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    team = models.ManyToManyField(Team, null=True, blank=True)
+    team = models.ManyToManyField(Team)
 
     def teams_or_players(self):
         return "\n".join(str([p.name for p in self.team.all()]))
 
 class Newsletter(models.Model):
     email = models.EmailField()
-
-# class Final(models.Model):
-#     tour = models.ForeignKey(Tournament, on_delete=models.CASCADE)

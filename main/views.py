@@ -67,28 +67,25 @@ def GenerateGroup(request, pk):
 
 @api_view(['GET'])
 def TournamentPk(request, pk):
-    teamtr = Team.objects.all().filter(team=True, direction_id=pk)
-    a = Tournament.objects.create(game_id=pk)
-    c = Tournament.objects.get(game_id=pk)
+    teamtr = Team.objects.all().filter(team=True, direction_id=pk, is_playing=False)
     list = []
     for i in teamtr:
-        print('for')
-        if i in c:
-            print('if')
-            i.remove()
-        else:
-            list.append(i)
-            print('else')
+        list.append(i)
     if len(list) < 2:
         return Response('kamandalar yetmayapti')
     else:
         randoming = random.sample(list, 2)
-    a.team.set(randoming)
-    a.save()
-    data = {
-        'game':a.game.name,
-        'teamlar': f"{randoming}"
-    }
+        for i in randoming:
+            print(i.is_playing)
+            i.is_playing = True
+            i.save()
+        a = Tournament.objects.create(game_id=pk)
+        a.team.set(randoming)
+        a.save()
+        data = {
+            'game':a.game.name,
+            'teamlar': f"{randoming}"
+        }
     return Response(data)
 
 # @api_view(['GET'])

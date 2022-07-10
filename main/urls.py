@@ -17,5 +17,4 @@ urlpatterns = [
     path('tournament/', TournamentsGET.as_view()),
     path('tournament/<int:pk>/', TournamentID.as_view()),
     # path('api/generateteam/<int:pk>/', GenerateTeam),
-    # path('asd/', asd),
 ]
