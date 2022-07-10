@@ -105,22 +105,6 @@ def TournamentPk(request, pk):
 #     }
 #     return Response(data)
 
-# @api_view(['GET'])
-# def asd(request, pk):
-#     teamtr = Group.objects.filter(team_team=True, direction_id=pk)
-#     list = []
-#     for i in teamtr:
-#         list.append(i)
-#     a = Tournament.objects.create(game_id=pk)
-#     randoming = random.sample(list, 2)
-#     a.team.set(randoming)
-#     a.save()
-#     data = {
-#         'game':a.game.name,
-#         'teamlar': f"{randoming}"
-#     }
-#     return Response(data)
-
 class TournamentsGET(ListAPIView):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer

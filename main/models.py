@@ -57,9 +57,9 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
-class Group(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    team = models.ManyToManyField(Team)
+# class Group(models.Model):
+#     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+#     team = models.ManyToManyField(Team)
 
 class Tournament(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
